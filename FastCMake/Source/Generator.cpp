@@ -2,53 +2,83 @@
 
 namespace youm::generator
 {
-	std::map<std::string, std::string> options;
-	bool createDir(const std::string & path)
+	bool Generator::createDir(const std::string & dir, DirHanler hanler, bool inRoot)
 	{
-		if (!std::filesystem::exists(path))
+		std::string directory;
+		if (inRoot) {
+			directory = (path + "/" + name + "/" + dir);
+		}
+		else
 		{
-			std::filesystem::create_directory(path);
+			directory = (path + "/" + dir);
+		}
+		if (!std::filesystem::exists(directory))
+		{
+			std::filesystem::create_directory(directory);
+			if (hanler != nullptr)
+			{
+				hanler(DirOperator(directory));
+			}
 			return true;
 		}
 		return false;
 	}
-	void createCMakeFile(const std::string& path)
+	bool Generator::createDirInPath(const std::string& dir)
 	{
-		// read cmake build file
-		std::ifstream cmakeFile;
-		std::stringstream cmakeContentStream;
-		std::string cmakeCode;
-		cmakeFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        try
-        {
-            // open files
-            cmakeFile.open("./CMakeLists.txt");
-            // read file's buffer contents into streams
-			cmakeContentStream << cmakeFile.rdbuf();
-			cmakeCode = cmakeContentStream.str();
+		return createDir(dir, nullptr, false);
+	}
+	bool Generator::createDirInRoot(const std::string& dir)
+	{
+		return createDir(dir, nullptr);
+	}
+
+	void Generator::createCMakeFile()
+	{
+		std::string code = readFromFile("./Assets/CMakeLists.txt");
+		writeToFile(path + "/" + name + "/" + "CMakeLists.txt", regexReplace(code));
+	}
+	std::string Generator::readFromFile(const std::string& filename)
+	{
+		// read file
+		std::ifstream file;
+		std::stringstream contentStream;
+		std::string content;
+		file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		try
+		{
+			// open files
+			file.open(filename);
+			// read file's buffer contents into streams
+			contentStream << file.rdbuf();
+			content = contentStream.str();
 			// close file handlers
-			cmakeFile.close();
-        }
-        catch (std::ifstream::failure& e)
-        {
-            std::cout << "Error: FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
-        }
+			file.close();
+			return content;
+		}
+		catch (std::ifstream::failure& e)
+		{
+			std::cout << "Error: FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+			return "error!!";
+		}
+	}
+	void Generator::writeToFile(const std::string& filename,const std::string& text)
+	{
 		//create CMakeLists.txt file in user's project
 		std::ofstream outStream;
 		try
 		{
 			outStream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
-			outStream.open(path + "/CMakeLists.txt", std::ios::app);
+			outStream.open(filename, std::ios::app);
 			outStream.exceptions(std::ofstream::goodbit);
 		}
 		catch (std::ofstream::failure const& exception)
 		{
 			std::cout << exception.what() << std::endl;
 		}
-		outStream << regexReplace(cmakeCode);
+		outStream << text;
 		outStream.close();
 	}
-	std::string regexReplace(const std::string& text)
+	std::string Generator::regexReplace(const std::string& text)
 	{
 		try
 		{
@@ -84,5 +114,27 @@ namespace youm::generator
 			return "replaced_text_error";
 		}
 
+	}
+	Options Generator::getOptions()
+	{
+		return this->options;
+	}
+
+
+	void DirOperator::createFile(const std::string& file, const std::string& text)
+	{
+		std::ofstream outStream;
+		try
+		{
+			outStream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
+			outStream.open(dir + "/" + file, std::ios::app);
+			outStream.exceptions(std::ofstream::goodbit);
+		}
+		catch (std::ofstream::failure const& exception)
+		{
+			std::cout << exception.what() << std::endl;
+		}
+		outStream << text;
+		outStream.close();
 	}
 }

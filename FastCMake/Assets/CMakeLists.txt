@@ -1,31 +1,31 @@
-# MapleTA Ê¹ÓÃÕıÔò±í´ïÊ½Æ¥Åä&{} ²¢½øĞĞÌæ»»
+ï»¿# FastCMake ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼åŒ¹é…&{} å¹¶è¿›è¡Œæ›¿æ¢
 
-# CMake ×îµÍ¼æÈİ°æ±¾
+# CMake æœ€ä½å…¼å®¹ç‰ˆæœ¬
 cmake_minimum_required(VERSION &{cmake_version})
-# ÉèÖÃÏîÄ¿Ãû³Æ 
+# è®¾ç½®é¡¹ç›®åç§° 
 project(&{project_name})
-# ÉèÖÃC++ °æ±¾
+# è®¾ç½®C++ ç‰ˆæœ¬
 set(CMAKE_CXX_STANDARD &{cpp_version})
-# ÉèÖÃÔ´ÂëÎÄ¼şÂ·¾¶
+# è®¾ç½®æºç æ–‡ä»¶è·¯å¾„
 file(GLOB SRC_FILES Source/main.cpp
-        "${PROJECT_SOURCE_DIR}/Source/*.h"
-        "${PROJECT_SOURCE_DIR}/Source/*.cpp"
-        "${PROJECT_SOURCE_DIR}/Source/*.hpp"
-        "${PROJECT_SOURCE_DIR}/Source/*.cc"
+        "${PROJECT_SOURCE_DIR}/Sources/*.h"
+        "${PROJECT_SOURCE_DIR}/Sources/*.cpp"
+        "${PROJECT_SOURCE_DIR}/Sources/*.hpp"
+        "${PROJECT_SOURCE_DIR}/Sources/*.cc"
 )
 
-# »ñÈ¡Â·¾¶ÏÂËùÓĞµÄ.cpp/.c/.ccÎÄ¼ş£¬²¢¸³Öµ¸ø±äÁ¿ÖĞ
+# è·å–è·¯å¾„ä¸‹æ‰€æœ‰çš„.cpp/.c/.ccæ–‡ä»¶ï¼Œå¹¶èµ‹å€¼ç»™å˜é‡ä¸­
 # aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/Sources SRC_FILES)
-# ¹æ¶¨.hÍ·ÎÄ¼şÂ·¾¶
+# è§„å®š.hå¤´æ–‡ä»¶è·¯å¾„
 # include_directories(${PROJECT_SOURCE_DIR}/Sources)
 
-# ½«.cpp/.c/.ccÎÄ¼şÉú³É¿ÉÖ´ĞĞÎÄ¼ş
+# å°†.cpp/.c/.ccæ–‡ä»¶ç”Ÿæˆå¯æ‰§è¡Œæ–‡ä»¶
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-# ¶Ôadd_library»òadd_executableÉú³ÉµÄÎÄ¼ş½øĞĞÁ´½Ó²Ù×÷
+# å¯¹add_libraryæˆ–add_executableç”Ÿæˆçš„æ–‡ä»¶è¿›è¡Œé“¾æ¥æ“ä½œ
 # target_link_libraries()
 
-# µ¼³öAssets 
+# å¯¼å‡ºAssets 
 add_custom_command(
         TARGET ${CMAKE_PROJECT_NAME}
         POST_BUILD
